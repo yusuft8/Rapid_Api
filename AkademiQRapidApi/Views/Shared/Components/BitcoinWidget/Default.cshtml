@@ -1,0 +1,106 @@
+﻿@model List<AkademiQRapidApi.Models.BitcoinViewModel.Class1>
+<style>
+@@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    .crypto-widget {
+        font-family: 'Inter', sans-serif;
+        background: rgba(30, 30, 30, 0.8); /* Anthracite Base */
+        backdrop-filter: blur(12px); /* Glassmorphism */
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(191, 0, 255, 0.3); /* Electric Purple Thin Glow */
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        color: #ffffff;
+        width: 100%; /* Genişliği kapsayıcıya göre ayarlar */
+        height: 100%; /* Yüksekliği kapsayıcıya göre ayarlar */
+        box-sizing: border-box;
+    }
+
+    .widget-title {
+        font-weight: 700;
+        font-size: 14px;
+        color: #00FFFF; /* Cyan */
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .crypto-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+        .crypto-item:last-child {
+            border-bottom: none;
+        }
+
+    .symbol-name {
+        font-weight: 600;
+        font-size: 15px;
+        color: #ffffff;
+    }
+
+    .price-text {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .percent-badge {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .positive {
+        background: rgba(0, 255, 255, 0.1);
+        color: #00FFFF; /* Cyan accent for positive */
+        border: 1px solid #00FFFF;
+    }
+
+    .negative {
+        background: rgba(191, 0, 255, 0.1);
+        color: #BF00FF; /* Electric Purple accent for negative */
+        border: 1px solid #BF00FF;
+    }
+
+    /* Neon Glow Effect on Hover */
+    .crypto-widget:hover {
+        box-shadow: 0 0 20px rgba(191, 0, 255, 0.2);
+        transition: 0.3s ease;
+    }</style>
+
+
+<div class="crypto-widget">
+    <div class="widget-title">
+        <span>Market Live</span>
+        <span style="color: #BF00FF;">●</span>
+    </div>
+
+    <div class="crypto-list">
+        @foreach (var item in Model)
+        {
+            // Basit bir sayısal kontrol (String olduğu için manuel kontrol)
+            bool isNegative = item.priceChangePercent.Contains("-");
+
+            <div class="crypto-item">
+                <div class="info">
+                    <div class="symbol-name">@item.symbol.Replace("USDT", "")</div>
+                    <div class="price-text">$@Math.Round(Convert.ToDecimal(item.lastPrice), 2)</div>
+                </div>
+
+                <div class="status">
+                    <span class="percent-badge @(isNegative ? "negative" : "positive")">
+                        @(isNegative ? "" : "+")@item.priceChangePercent%
+                    </span>
+                </div>
+            </div>
+        }
+    </div>
+</div>

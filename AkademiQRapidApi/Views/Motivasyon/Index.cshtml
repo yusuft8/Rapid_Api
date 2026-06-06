@@ -1,0 +1,339 @@
+﻿@model AkademiQRapidApi.Models.MotivasyonViewModel.Rootobject
+@{
+    ViewData["Title"] = "Motivasyon Dashboard";
+    Layout = null;
+    var initials = string.IsNullOrEmpty(Model?.author) ? "?" :
+        string.Join("", Model.author.Split(' ').Take(2).Select(w => w[0].ToString().ToUpper()));
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MotivQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #05060d;
+            color: #e8ecff;
+            font-family: 'IBM Plex Sans', sans-serif;
+            min-height: 100vh;
+            padding: 40px 16px;
+        }
+
+        .wrapper {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .brand-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            letter-spacing: .06em;
+        }
+
+        .brand-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(124,58,237,.1);
+            border: 1px solid rgba(124,58,237,.3);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #a78bfa;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: #a78bfa;
+            border-radius: 50%;
+            animation: blink 1.6s ease-in-out infinite;
+        }
+
+        @@keyframes blink {
+            0%, 100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+
+        /* SECTION LABEL */
+        .sec-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        /* META GRID */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .meta-card {
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+
+        .meta-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            color: #4a5078;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .meta-value {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e8ecff;
+            word-break: break-word;
+        }
+
+            .meta-value.ok {
+                color: #34d399;
+            }
+
+        /* QUOTE */
+        .quote-wrap {
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            border-left: 3px solid #7c3aed;
+            border-radius: 0 12px 12px 0;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .quote-wrap::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, #7c3aed, transparent);
+                opacity: .4;
+            }
+
+        .quote-mark {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 80px;
+            color: #1e2236;
+            line-height: .7;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .quote-text {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-style: italic;
+            font-size: 18px;
+            line-height: 1.85;
+            color: #c4c9e8;
+            letter-spacing: .01em;
+        }
+
+        /* AUTHOR */
+        .author-card {
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(124,58,237,.15);
+            border: 1px solid rgba(124,58,237,.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            color: #a78bfa;
+            flex-shrink: 0;
+        }
+
+        .author-name {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            color: #e8ecff;
+        }
+
+        .author-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            margin-top: 3px;
+            letter-spacing: .06em;
+        }
+
+        /* FOOTER */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .type-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #a78bfa;
+            background: rgba(124,58,237,.1);
+            border: 1px solid rgba(124,58,237,.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .footer-api {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+
+        /* EMPTY */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+            opacity: .3;
+        }
+
+        .empty-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            color: #4a5078;
+        }
+
+        .empty-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: #2a2f42;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+
+        @if (Model == null)
+        {
+            <div class="empty-state">
+                <span class="empty-icon">✨</span>
+                <div class="empty-title">Veri Yüklenemedi</div>
+                <div class="empty-sub">Lütfen tekrar deneyin</div>
+            </div>
+        }
+        else
+        {
+            <div class="topbar">
+                <div>
+                    <div class="brand-name">MotivQ</div>
+                    <div class="brand-sub">Günün İlham Sözü</div>
+                </div>
+                <div class="live-badge">
+                    <div class="live-dot"></div>
+                    Aktif
+                </div>
+            </div>
+
+            <div class="sec-label">Özet</div>
+            <div class="meta-grid">
+                <div class="meta-card">
+                    <div class="meta-label">Yazar</div>
+                    <div class="meta-value">@(Model.author ?? "Bilinmiyor")</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">Kategori</div>
+                    <div class="meta-value">@(Model.type ?? "-")</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">Durum</div>
+                    <div class="meta-value ok">Aktif</div>
+                </div>
+            </div>
+
+            <div class="sec-label">Alıntı</div>
+            <div class="quote-wrap">
+                <span class="quote-mark">"</span>
+                <div class="quote-text">@Model.quote</div>
+            </div>
+
+            <div class="sec-label">Yazar</div>
+            <div class="author-card">
+                <div class="avatar">@initials</div>
+                <div>
+                    <div class="author-name">@(Model.author ?? "Bilinmiyor")</div>
+                    <div class="author-sub">Alıntı kaynağı</div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span class="type-badge">@(Model.type ?? "general")</span>
+                <span class="footer-api">RapidAPI · quotes-api12</span>
+            </div>
+        }
+
+    </div>
+</body>
+</html>

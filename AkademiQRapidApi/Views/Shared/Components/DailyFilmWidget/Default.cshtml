@@ -1,0 +1,66 @@
+﻿@model AkademiQRapidApi.Models.DailyFilmModel.Rootobject
+@using System.Linq
+@{
+    var topFilm = Model?.recommendations?.FirstOrDefault();
+    var title = topFilm?.title?.ToUpper() ?? "SYSTEM OFFLINE";
+    var mediaType = topFilm?.media_type?.ToUpper() ?? "CINEMA";
+    var criticsScore = topFilm?.critics_score ?? 0;
+    var audienceScore = topFilm?.audience_score ?? 0;
+    var posterUrl = !string.IsNullOrEmpty(topFilm?.image_url)
+                    ? topFilm.image_url
+                    : "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600&auto=format&fit=crop";
+    var mediaUrl = !string.IsNullOrEmpty(topFilm?.media_url)
+                   ? topFilm.media_url
+                   : "https://www.rottentomatoes.com";
+}
+
+<article class="glass-panel rounded-lg flex flex-col col-span-1 md:col-span-3 lg:col-span-3 h-[34rem] overflow-hidden group">
+    @if (topFilm != null)
+    {
+        <div class="relative h-2/3">
+            <img alt="@title Poster"
+                 class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                 src="@posterUrl" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#05060d] via-[#05060d]/50 to-transparent"></div>
+            <span class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-2 py-1 border border-neon-purple font-label-caps text-label-caps text-neon-purple text-[0.65rem] rounded-sm tracking-widest">
+                @mediaType
+            </span>
+        </div>
+
+        <div class="p-card-padding flex-1 flex flex-col -mt-10 relative z-10 px-5 pb-5">
+            <h2 class="font-headline-lg text-headline-lg text-white leading-none mb-3 text-4xl line-clamp-2">
+                @title
+            </h2>
+
+            <div class="flex items-center gap-3 font-label-caps text-label-caps text-white/60 mb-4 text-sm">
+                @if (criticsScore > 0)
+                {
+                    <span class="flex items-center gap-1 text-red-400">
+                        🍅 @criticsScore<span class="text-white/30">%</span>
+                    </span>
+                    <span class="text-white/20">|</span>
+                }
+                @if (audienceScore > 0)
+                {
+                    <span class="flex items-center gap-1 text-yellow-400">
+                        🍿 @audienceScore<span class="text-white/30">%</span>
+                    </span>
+                }
+            </div>
+
+            <div class="mb-auto"></div>
+
+            <a href="@mediaUrl" target="_blank"
+               class="w-full text-center border border-neon-green text-neon-green font-headline-md py-2.5 hover:bg-neon-green hover:text-[#05060d] transition-colors duration-300 mt-4 text-xl tracking-wider rounded-sm shadow-[0_0_10px_rgba(0,229,160,0.1)] hover:shadow-[0_0_20px_rgba(0,229,160,0.4)] block">
+                INITIATE PLAYBACK
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="flex-1 flex flex-col items-center justify-center border border-white/10 rounded-lg bg-black/20 m-4">
+            <span class="material-symbols-outlined text-4xl text-neon-purple mb-2 animate-pulse">warning</span>
+            <span class="font-label-caps text-neon-purple tracking-widest">NO SIGNAL</span>
+        </div>
+    }
+</article>

@@ -1,0 +1,222 @@
+﻿@model List<AkademiQRapidApi.Models.BitcoinViewModel.Class1>
+
+@{
+    ViewData["Title"] = "Market Terminal v1.0";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #05060d;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .terminal-container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            border-radius: 12px;
+        }
+
+        .title-group h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #f8fafc;
+            font-family: 'IBM Plex Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-info {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: #60a5fa;
+        }
+
+        /* GRID */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        /* CARD */
+        .coin-card {
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            border-radius: 10px;
+            padding: 18px;
+            transition: all 0.2s ease;
+        }
+
+            .coin-card:hover {
+                border-color: #3b82f6;
+                transform: scale(1.02);
+            }
+
+        .coin-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .symbol {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 700;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        .price-label {
+            font-size: 11px;
+            color: #4a5078;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .price-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -1px;
+        }
+
+        /* BADGES */
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .up {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .down {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* DETAILS */
+        .details {
+            margin-top: 15px;
+            border-top: 1px solid #1e2236;
+            padding-top: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .d-lbl {
+            color: #4a5078;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .d-val {
+            color: #8892b0;
+            font-weight: 600;
+        }
+
+        .volume-info {
+            margin-top: 10px;
+            font-size: 10px;
+            color: #3b82f6;
+            text-align: right;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-container">
+        <header class="header">
+            <div class="title-group">
+                <h1><span style="color: #3b82f6;">◈</span> MARKET_MONITOR_TOP_50</h1>
+            </div>
+            <div class="stats-info">
+                SEC_STATUS: CONNECTED // ACTIVE_TRADES: @Model?.Count
+            </div>
+        </header>
+
+        <div class="market-grid">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    // Artış/Azalış tespiti (priceChangePercent "-" ile başlıyorsa düşüştedir)
+                    bool isDown = item.priceChangePercent.Contains("-");
+                    string statusClass = isDown ? "down" : "up";
+                    string arrow = isDown ? "▼" : "▲";
+
+                    <div class="coin-card">
+                        <div class="coin-top">
+                            <span class="symbol">@item.symbol</span>
+                            <span class="badge @statusClass">@arrow @item.priceChangePercent%</span>
+                        </div>
+
+                        <div class="price-label">LAST PRICE</div>
+                        <div class="price-value @(isDown ? "down-text" : "up-text")">
+                            $@item.lastPrice
+                        </div>
+
+                        <div class="details">
+                            <div class="detail-item">
+                                <span class="d-lbl">24H HIGH</span>
+                                <span class="d-val" style="color: #e2e8f0;">$@item.highPrice</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="d-lbl">24H LOW</span>
+                                <span class="d-val">$@item.lowPrice</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="d-lbl">TRADES</span>
+                                <span class="d-val">@item.count.ToString("N0")</span>
+                            </div>
+                        </div>
+
+                        <div class="volume-info">
+                            VOL: @item.volume
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div style="grid-column: 1/-1; text-align: center; padding: 100px; color: #4a5078; font-family: 'IBM Plex Mono';">
+                    > NO_DATA_FOUND: CHECK_API_KEY_OR_ENDPOINT
+                </div>
+            }
+        </div>
+    </div>
+
+</body>
+</html>

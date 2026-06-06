@@ -1,0 +1,39 @@
+﻿@model AkademiQRapidApi.Models.GasViewModel.Rootobject
+@using System.Linq
+
+@{
+    // Bölgesel veriyi öncelikli olarak çekiyoruz, bulamazsa listedeki ilk veriyi (genelde İstanbul/Ankara olur) alıyoruz.
+    var gasData = Model?.result?.FirstOrDefault(x => x.country != null && x.country.Contains("Bartın", StringComparison.OrdinalIgnoreCase))
+                  ?? Model?.result?.FirstOrDefault();
+
+    // Null kontrolleri
+    var gasolinePrice = gasData?.gasoline ?? "0.00";
+    var dieselPrice = gasData?.diesel ?? "0.00";
+    var currency = gasData?.currency ?? "TRY";
+    var location = gasData?.country?.ToUpper() ?? "STATION OFFLINE";
+}
+
+<article class="glass-panel rounded-lg flex flex-col col-span-1 md:col-span-3 lg:col-span-3 h-32 p-card-padding relative overflow-hidden">
+
+    <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-neon-green/10 to-transparent"></div>
+
+    <header class="flex justify-between items-start mb-1 z-10">
+        <div>
+            <h2 class="font-label-caps text-label-caps text-white/60 text-xs tracking-wider">
+                GASOLINE <span class="text-neon-green">(@currency)</span>
+            </h2>
+            <p class="text-[0.60rem] text-neon-green/70 tracking-widest mt-0.5">LOC: @location</p>
+        </div>
+        <span class="material-symbols-outlined text-neon-green text-lg">local_gas_station</span>
+    </header>
+
+    <div class="flex items-end gap-3 z-10 mt-auto pb-1">
+
+        <span class="font-display-xl text-display-xl text-white leading-none text-4xl">@gasolinePrice</span>
+
+        <span class="font-data-mono text-data-mono text-neon-green mb-1 flex items-center text-[0.70rem] tracking-widest border-l border-white/20 pl-3">
+            DSL: @dieselPrice
+        </span>
+
+    </div>
+</article>

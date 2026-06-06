@@ -1,0 +1,73 @@
+﻿@model AkademiQRapidApi.Models.FootballscoreViewModel.Rootobject
+@using System.Linq
+
+<article class="glass-panel rounded-lg flex flex-col col-span-1 md:col-span-6 lg:col-span-6 h-64 p-card-padding overflow-hidden">
+
+    <header class="glass-panel-header pb-2 mb-4 flex justify-between items-center">
+        <h2 class="font-headline-md text-headline-md text-white">SPORTS <span class="text-neon-purple">/ LIVE</span></h2>
+
+        @if (Model?.response?.live != null && Model.response.live.Any(m => m.status.ongoing))
+        {
+            <span class="font-label-caps text-label-caps text-neon-green animate-pulse">IN PLAY</span>
+        }
+        else
+        {
+            <span class="font-label-caps text-label-caps text-white/50">FIXTURES</span>
+        }
+    </header>
+
+    <div class="flex-1 flex flex-col justify-center space-y-3">
+
+        @if (Model?.response?.live != null && Model.response.live.Any())
+        {
+            int index = 0;
+            // h-64 yüksekliğini bozmamak için sadece ilk 2 maçı alıyoruz
+            foreach (var match in Model.response.live.Take(2))
+            {
+                // Senin tasarımındaki o şık renk değişimlerini (neon ve soluk) simüle etmek için:
+                string rowBorder = index == 0 ? "border-neon-green" : "border-white/10";
+                string scoreColor = index == 0 ? "text-neon-green" : "text-white/60";
+                string homeBg = index == 0 ? "bg-purple-900" : "bg-red-900";
+                string homeBorder = index == 0 ? "border-neon-purple" : "border-red-500";
+                string awayBg = index == 0 ? "bg-blue-900" : "bg-green-900";
+                string awayBorder = index == 0 ? "border-blue-400" : "border-green-500";
+
+                <div class="flex items-center justify-between p-2 hover:bg-white/5 rounded transition-colors border-l-2 @rowBorder">
+
+                    <div class="flex items-center gap-3 w-1/3 justify-end">
+                        <span class="font-body-lg text-body-lg text-white truncate text-right" title="@match.home.name">
+                            @match.home.name
+                        </span>
+                        <div class="w-6 h-6 rounded-full border shrink-0 @homeBg @homeBorder"></div>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center px-4 py-1 bg-black/40 rounded border border-white/10 font-data-mono text-data-mono @scoreColor tracking-widest min-w-[80px]">
+                        <span>@match.home.score - @match.away.score</span>
+
+                        @if (match.status?.liveTime != null && !string.IsNullOrEmpty(match.status.liveTime._short))
+                        {
+                            <span class="text-[0.55rem] text-white/60 tracking-normal -mt-1">@match.status.liveTime._short'</span>
+                        }
+                    </div>
+
+                    <div class="flex items-center gap-3 w-1/3 justify-start">
+                        <div class="w-6 h-6 rounded-full border shrink-0 @awayBg @awayBorder"></div>
+                        <span class="font-body-lg text-body-lg text-white/80 truncate text-left" title="@match.away.name">
+                            @match.away.name
+                        </span>
+                    </div>
+
+                </div>
+
+                index++;
+            }
+        }
+        else
+        {
+            <div class="flex-1 flex items-center justify-center text-white/40 font-body-lg text-sm border-l-2 border-white/10 p-2">
+                Şu an canlı maç bulunmuyor.
+            </div>
+        }
+
+    </div>
+</article>

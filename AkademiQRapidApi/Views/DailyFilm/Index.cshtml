@@ -1,0 +1,190 @@
+﻿@model AkademiQRapidApi.Models.DailyFilmModel.Rootobject
+@using System.Linq
+@{
+    var topFilm = Model?.recommendations?.FirstOrDefault();
+    var title = topFilm?.title ?? "No Film";
+    var mediaType = topFilm?.media_type ?? "Movie";
+    var criticsScore = topFilm?.critics_score ?? 0;
+    var audienceScore = topFilm?.audience_score ?? 0;
+    var posterUrl = !string.IsNullOrEmpty(topFilm?.image_url)
+                    ? topFilm.image_url
+                    : "https://via.placeholder.com/640x280/111/444?text=No+Poster";
+    var mediaUrl = !string.IsNullOrEmpty(topFilm?.media_url)
+                   ? topFilm.media_url
+                   : "https://www.rottentomatoes.com";
+}
+
+<style>
+    .cinema-card {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+        overflow: hidden;
+        background: #0d0d0d;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .cinema-poster {
+        position: relative;
+        height: 280px;
+        overflow: hidden;
+    }
+
+        .cinema-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+    .cinema-poster-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+    }
+
+    .cinema-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: rgba(0,0,0,0.65);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        padding: 4px 10px;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+
+    .cinema-poster-title {
+        position: absolute;
+        bottom: 16px;
+        left: 20px;
+        right: 20px;
+        color: #fff;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .cinema-body {
+        padding: 16px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .cinema-scores {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .scores-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .score-pill {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .score-critics {
+        background: rgba(163,45,45,0.15);
+        color: #f09595;
+        border: 1px solid rgba(163,45,45,0.3);
+    }
+
+    .score-audience {
+        background: rgba(133,79,11,0.15);
+        color: #fac775;
+        border: 1px solid rgba(133,79,11,0.3);
+    }
+
+    .rt-label {
+        font-size: 11px;
+        color: rgba(255,255,255,0.3);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .rt-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #e24b4a;
+    }
+
+    .cinema-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.05);
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s, border-color 0.2s;
+        box-sizing: border-box;
+    }
+
+        .cinema-btn:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.35);
+        }
+</style>
+
+@if (topFilm != null)
+{
+    <div class="cinema-card">
+        <div class="cinema-poster">
+            <img src="@posterUrl" alt="@title" />
+            <div class="cinema-poster-overlay"></div>
+            <div class="cinema-badge">@mediaType</div>
+            <div class="cinema-poster-title">@title</div>
+        </div>
+        <div class="cinema-body">
+            <div class="cinema-scores">
+                <div class="scores-left">
+                    @if (criticsScore > 0)
+                    {
+                        <div class="score-pill score-critics">🍅 @criticsScore% Critics</div>
+                    }
+                    @if (audienceScore > 0)
+                    {
+                        <div class="score-pill score-audience">🍿 @audienceScore% Audience</div>
+                    }
+                </div>
+                <div class="rt-label">
+                    <div class="rt-dot"></div>
+                    Rotten Tomatoes
+                </div>
+            </div>
+            <a href="@mediaUrl" target="_blank" class="cinema-btn">▶ Initiate Playback</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="cinema-card" style="padding:40px; text-align:center; color:rgba(255,255,255,0.3);">
+        🍿 Film verisi yüklenemedi.
+    </div>
+}

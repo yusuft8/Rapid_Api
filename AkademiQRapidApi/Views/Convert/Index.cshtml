@@ -1,0 +1,737 @@
+﻿@model AkademiQRapidApi.Models.ConvertViewmodel.Rootobject
+
+@{
+    ViewData["Title"] = "Döviz Çevirici";
+    bool hasResult = Model?.to != null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRY Döviz Çevirici</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #060810;
+            --surface: #0d0f1a;
+            --surface2: #131625;
+            --border: #1e2236;
+            --border2: #272d47;
+            --text: #e8ecff;
+            --muted: #4a5078;
+            --muted2: #6b74a8;
+            --green: #00e5a0;
+            --green-dim: rgba(0,229,160,0.08);
+            --usd: #85e89d;
+            --eur: #79c0ff;
+            --gbp: #d2a8ff;
+            --jpy: #ff7b72;
+            --cad: #e06c75;
+            --aud: #56b6c2;
+            --chf: #e5c07b;
+            --btc-c: #f7931a;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'IBM Plex Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+            /* scanline */
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.012) 2px, rgba(255,255,255,0.012) 4px);
+                pointer-events: none;
+                z-index: 0;
+            }
+
+        .bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 1000px;
+            height: 700px;
+            background: radial-gradient(ellipse at center, rgba(0,229,160,0.045) 0%, rgba(79,140,255,0.03) 40%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 880px;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            animation: fadeDown .55s ease both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .brand-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 38px;
+            letter-spacing: .06em;
+            line-height: 1;
+        }
+
+        .brand-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--muted2);
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--green-dim);
+            border: 1px solid rgba(0,229,160,.2);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--green);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: blink 1.6s ease-in-out infinite;
+        }
+
+        @@keyframes blink {
+            0%, 100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+
+        /* ── INPUT PANEL ── */
+        .input-panel {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 18px;
+            padding: 32px 36px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp .55s ease both;
+            animation-delay: .05s;
+        }
+
+            .input-panel::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--green), transparent);
+                opacity: .5;
+            }
+
+        .input-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: stretch;
+            gap: 12px;
+        }
+
+        .input-wrap {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .try-prefix {
+            position: absolute;
+            left: 18px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            color: var(--muted2);
+            line-height: 1;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .amount-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 18px 20px 18px 52px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 42px;
+            letter-spacing: .02em;
+            color: var(--text);
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+            -moz-appearance: textfield;
+        }
+
+            .amount-input::-webkit-outer-spin-button,
+            .amount-input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+            }
+
+            .amount-input:focus {
+                border-color: var(--green);
+                box-shadow: 0 0 0 3px rgba(0,229,160,.1);
+            }
+
+            .amount-input::placeholder {
+                color: var(--border2);
+            }
+
+        .convert-btn {
+            background: var(--green);
+            color: #060810;
+            border: none;
+            border-radius: 12px;
+            padding: 0 28px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            letter-spacing: .1em;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .18s ease, transform .15s ease, box-shadow .18s ease;
+            box-shadow: 0 0 0 0 rgba(0,229,160,0);
+        }
+
+            .convert-btn:hover {
+                background: #19ffb5;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(0,229,160,.25);
+            }
+
+            .convert-btn:active {
+                transform: translateY(0);
+            }
+
+        .hint-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .hint {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+            .hint strong {
+                color: var(--muted2);
+            }
+
+        /* ── RESULT AREA ── */
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 16px;
+            animation: fadeUp .5s ease both;
+            animation-delay: .12s;
+        }
+
+        .r-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .r-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 18px;
+        }
+
+        .r-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .r-amount {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 15px;
+            letter-spacing: .06em;
+            color: var(--green);
+        }
+
+        /* ── GRID ── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        @@media (max-width: 680px) {
+            .grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px 20px 18px;
+            position: relative;
+            overflow: hidden;
+            transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+            animation: fadeUp .55s ease both;
+            cursor: default;
+        }
+
+            .card:hover {
+                transform: translateY(-4px);
+                background: var(--surface2);
+            }
+
+            .card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 16px;
+                right: 16px;
+                height: 2px;
+                border-radius: 0 0 4px 4px;
+                opacity: 0;
+                transition: opacity .2s ease;
+            }
+
+            .card:hover::before {
+                opacity: 1;
+            }
+
+            .card:nth-child(1) {
+                animation-delay: .15s
+            }
+
+                .card:nth-child(1)::before {
+                    background: var(--usd)
+                }
+
+            .card:nth-child(2) {
+                animation-delay: .20s
+            }
+
+                .card:nth-child(2)::before {
+                    background: var(--eur)
+                }
+
+            .card:nth-child(3) {
+                animation-delay: .25s
+            }
+
+                .card:nth-child(3)::before {
+                    background: var(--gbp)
+                }
+
+            .card:nth-child(4) {
+                animation-delay: .30s
+            }
+
+                .card:nth-child(4)::before {
+                    background: var(--jpy)
+                }
+
+            .card:nth-child(5) {
+                animation-delay: .35s
+            }
+
+                .card:nth-child(5)::before {
+                    background: var(--cad)
+                }
+
+            .card:nth-child(6) {
+                animation-delay: .40s
+            }
+
+                .card:nth-child(6)::before {
+                    background: var(--aud)
+                }
+
+            .card:nth-child(7) {
+                animation-delay: .45s
+            }
+
+                .card:nth-child(7)::before {
+                    background: var(--chf)
+                }
+
+            .card:nth-child(8) {
+                animation-delay: .50s
+            }
+
+                .card:nth-child(8)::before {
+                    background: var(--btc-c)
+                }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .card-flag {
+            font-size: 20px;
+        }
+
+        .card-code {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .1em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border2);
+            color: var(--muted2);
+        }
+
+        .card-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            line-height: 1.1;
+            color: var(--text);
+            transition: color .2s ease;
+            word-break: break-all;
+        }
+
+        .card-full-name {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px;
+            font-weight: 300;
+        }
+
+        .card:nth-child(1):hover .card-value {
+            color: var(--usd)
+        }
+
+        .card:nth-child(2):hover .card-value {
+            color: var(--eur)
+        }
+
+        .card:nth-child(3):hover .card-value {
+            color: var(--gbp)
+        }
+
+        .card:nth-child(4):hover .card-value {
+            color: var(--jpy)
+        }
+
+        .card:nth-child(5):hover .card-value {
+            color: var(--cad)
+        }
+
+        .card:nth-child(6):hover .card-value {
+            color: var(--aud)
+        }
+
+        .card:nth-child(7):hover .card-value {
+            color: var(--chf)
+        }
+
+        .card:nth-child(8):hover .card-value {
+            color: var(--btc-c)
+        }
+
+        .card.btc-card:hover {
+            border-color: rgba(247,147,26,.3);
+            box-shadow: 0 0 28px rgba(247,147,26,.07);
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 56px 20px;
+            animation: fadeUp .55s ease both;
+            animation-delay: .15s;
+        }
+
+        .empty-icon {
+            font-size: 52px;
+            margin-bottom: 16px;
+            display: block;
+            opacity: .4;
+        }
+
+        .empty-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px;
+            letter-spacing: .06em;
+            color: var(--muted2);
+            margin-bottom: 8px;
+        }
+
+        .empty-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 0 2px;
+            animation: fadeUp .55s ease both;
+            animation-delay: .55s;
+        }
+
+        .footer-info {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: .08em;
+        }
+
+        .footer-api {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--muted2);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 4px 12px;
+            border-radius: 4px;
+            letter-spacing: .06em;
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @@keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <div class="wrapper">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="brand">
+                <span class="brand-name">KurTakip</span>
+                <span class="brand-sub">Exchange Tracker</span>
+            </div>
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                Canlı Veri
+            </div>
+        </div>
+
+        <!-- INPUT PANEL -->
+        <div class="input-panel">
+            <label class="input-label" for="amountInput">Çevirmek istediğiniz TL miktarını girin</label>
+            <form method="get" action="/Convert/Index" id="convertForm">
+                <div class="input-row">
+                    <div class="input-wrap">
+                        <span class="try-prefix">₺</span>
+                        <input id="amountInput"
+                               name="amount"
+                               type="number"
+                               min="0.01"
+                               step="any"
+                               class="amount-input"
+                               placeholder="1000"
+                               value="@(Model?.amount > 0 ? Model.amount.ToString() : "")"
+                               autofocus />
+                    </div>
+                    <button type="submit" class="convert-btn">HESAPLA</button>
+                </div>
+                <div class="hint-row">
+                    <span class="hint">Enter ile de hesaplayabilirsiniz &nbsp;·&nbsp; <strong>Kaynak:</strong> Türk Lirası (TRY)</span>
+                </div>
+            </form>
+        </div>
+
+        @if (hasResult)
+        {
+            <!-- RESULT HEADER -->
+            <div class="result-header">
+                <div class="r-line"></div>
+                <div class="r-center">
+                    <span class="r-label">Sonuçlar</span>
+                    <span class="r-amount">₺@Model.amount.ToString("N0") TRY</span>
+                    <span class="r-label">karşılığı</span>
+                </div>
+                <div class="r-line"></div>
+            </div>
+
+            <!-- GRID -->
+            <div class="grid">
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-flag">🇺🇸</span>
+                        <span class="card-code">USD</span>
+                    </div>
+                    <div class="card-value">@Model.to.USD.ToString("N4")</div>
+                    <div class="card-full-name">Amerikan Doları</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-flag">🇪🇺</span>
+                        <span class="card-code">EUR</span>
+                    </div>
+                    <div class="card-value">@Model.to.EUR.ToString("N4")</div>
+                    <div class="card-full-name">Euro</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-flag">🇬🇧</span>
+                        <span class="card-code">GBP</span>
+                    </div>
+                    <div class="card-value">@Model.to.GBP.ToString("N4")</div>
+                    <div class="card-full-name">İngiliz Sterlini</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-flag">🇯🇵</span>
+                        <span class="card-code">JPY</span>
+                    </div>
+                    <div class="card-value">@Model.to.JPY.ToString("N3")</div>
+                    <div class="card-full-name">Japon Yeni</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-flag">🇨🇦</span>
+                        <span class="card-code">CAD</span>
+                    </div>
+                    <div class="card-value">@Model.to.CAD.ToString("N4")</div>
+                    <div class="card-full-name">Kanada Doları</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-flag">🇦🇺</span>
+                        <span class="card-code">AUD</span>
+                    </div>
+                    <div class="card-value">@Model.to.AUD.ToString("N4")</div>
+                    <div class="card-full-name">Avustralya Doları</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-flag">🇨🇭</span>
+                        <span class="card-code">CHF</span>
+                    </div>
+                    <div class="card-value">@Model.to.CHF.ToString("N4")</div>
+                    <div class="card-full-name">İsviçre Frangı</div>
+                </div>
+
+                <div class="card btc-card">
+                    <div class="card-header">
+                        <span class="card-flag">₿</span>
+                        <span class="card-code">BTC</span>
+                    </div>
+                    <div class="card-value">@Model.to.BTC.ToString("F8")</div>
+                    <div class="card-full-name">Bitcoin</div>
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <!-- EMPTY STATE -->
+            <div class="empty-state">
+                <span class="empty-icon">💱</span>
+                <div class="empty-title">Miktar Giriniz</div>
+                <div class="empty-sub">Yukarıya bir TL miktarı girin ve HESAPLA'ya basın</div>
+            </div>
+        }
+
+        <div class="footer">
+            <span class="footer-info">Türk Lirası (TRY) bazlı dönüşüm · Gerçek zamanlı</span>
+            <span class="footer-api">RapidAPI · Fast Price Exchange Rates</span>
+        </div>
+
+    </div>
+
+</body>
+</html>

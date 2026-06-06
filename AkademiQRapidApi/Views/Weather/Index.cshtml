@@ -1,0 +1,427 @@
+﻿@model AkademiQRapidApi.Models.WeatherVievModel.Rootobject
+@{
+    ViewData["Title"] = "Hava Durumu Detayları";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KurTakip — Hava Durumu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #05060d;
+            color: #e8ecff;
+            font-family: 'IBM Plex Sans', sans-serif;
+            min-height: 100vh;
+            padding: 40px 16px;
+        }
+
+        .wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .brand-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            letter-spacing: .06em;
+        }
+
+        .brand-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(124,58,237,.1);
+            border: 1px solid rgba(124,58,237,.3);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #a78bfa;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: #a78bfa;
+            border-radius: 50%;
+            animation: blink 1.6s ease-in-out infinite;
+        }
+
+        @@keyframes blink {
+            0%, 100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+
+        .hero-panel {
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+            .hero-panel::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #7c3aed, transparent);
+                opacity: .6;
+            }
+
+        .hero-city {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 52px;
+            letter-spacing: .04em;
+            line-height: 1;
+        }
+
+        .hero-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+        .hero-temp-wrap {
+            text-align: right;
+        }
+
+        .hero-temp {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            line-height: 1;
+        }
+
+            .hero-temp sup {
+                font-size: 36px;
+                color: #7c3aed;
+                vertical-align: super;
+            }
+
+        .hero-feels {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: #4a5078;
+            margin-top: 4px;
+        }
+
+            .hero-feels em {
+                color: #a78bfa;
+                font-style: normal;
+            }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        @@media (max-width: 680px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .card {
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            border-radius: 14px;
+            padding: 18px 18px 16px;
+            position: relative;
+            overflow: hidden;
+            transition: transform .2s, border-color .2s, background .2s;
+            cursor: default;
+        }
+
+            .card:hover {
+                transform: translateY(-4px);
+                background: #131625;
+                border-color: #2a2f42;
+            }
+
+            .card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 14px;
+                right: 14px;
+                height: 2px;
+                border-radius: 0 0 4px 4px;
+            }
+
+            .card:nth-child(1)::before {
+                background: #a78bfa;
+            }
+
+            .card:nth-child(2)::before {
+                background: #79c0ff;
+            }
+
+            .card:nth-child(3)::before {
+                background: #85e89d;
+            }
+
+            .card:nth-child(4)::before {
+                background: #e5c07b;
+            }
+
+        .card-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 22px;
+            font-weight: 600;
+            color: #e8ecff;
+        }
+
+        .card-unit {
+            font-size: 12px;
+            color: #4a5078;
+            font-weight: 300;
+            margin-left: 3px;
+        }
+
+        .coord-panel {
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .coord-panel::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(124,58,237,.4), transparent);
+            }
+
+        .coord-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        .coord-row {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .coord-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .coord-key {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .coord-val {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 20px;
+            font-weight: 600;
+            color: #e8ecff;
+        }
+
+        .coord-sep {
+            width: 1px;
+            height: 40px;
+            background: #1e2236;
+        }
+
+        .coord-badge {
+            margin-left: auto;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #7c3aed;
+            background: rgba(124,58,237,.1);
+            border: 1px solid rgba(124,58,237,.25);
+            padding: 4px 12px;
+            border-radius: 6px;
+            letter-spacing: .08em;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            letter-spacing: .08em;
+            color: #a78bfa;
+            background: rgba(124,58,237,.08);
+            border: 1px solid rgba(124,58,237,.25);
+            border-radius: 8px;
+            padding: 10px 20px;
+            text-decoration: none;
+            transition: background .18s, transform .15s;
+        }
+
+            .back-btn:hover {
+                background: rgba(124,58,237,.18);
+                transform: translateY(-2px);
+            }
+
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 0 2px;
+        }
+
+        .footer-info {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+        }
+
+        .footer-api {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+
+        <div class="topbar">
+            <div>
+                <div class="brand-name">Hava Durumu</div>
+                <div class="brand-sub">Weather Detail</div>
+            </div>
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                Canlı Veri
+            </div>
+        </div>
+
+        <div class="hero-panel">
+            <div>
+                <div class="hero-city">@Model.name</div>
+                <div class="hero-label">Hava Durumu Detayları</div>
+            </div>
+            <div class="hero-temp-wrap">
+                <div class="hero-temp">@Model.main.temp<sup>°C</sup></div>
+                <div class="hero-feels">Hissedilen: <em>@Model.main.feels_like °C</em></div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <span class="card-label">Sıcaklık</span>
+                <div class="card-value">@Model.main.temp<span class="card-unit">°C</span></div>
+            </div>
+            <div class="card">
+                <span class="card-label">Hissedilen</span>
+                <div class="card-value">@Model.main.feels_like<span class="card-unit">°C</span></div>
+            </div>
+            <div class="card">
+                <span class="card-label">Basınç</span>
+                <div class="card-value">@Model.main.pressure<span class="card-unit">hPa</span></div>
+            </div>
+            <div class="card">
+                <span class="card-label">Şehir</span>
+                <div class="card-value" style="font-size:16px;">@Model.name</div>
+            </div>
+        </div>
+
+        <div class="coord-panel">
+            <span class="coord-label">Koordinatlar</span>
+            <div class="coord-row">
+                <div class="coord-item">
+                    <span class="coord-key">Enlem</span>
+                    <span class="coord-val">@Model.coord.lat</span>
+                </div>
+                <div class="coord-sep"></div>
+                <div class="coord-item">
+                    <span class="coord-key">Boylam</span>
+                    <span class="coord-val">@Model.coord.lon</span>
+                </div>
+                <span class="coord-badge">GPS · LIVE</span>
+            </div>
+        </div>
+
+        <a href="/Home/Index" class="back-btn">← Dashboard'a Dön</a>
+
+        <div class="footer">
+            <span class="footer-info">OpenWeather API · Gerçek zamanlı veri</span>
+            <span class="footer-api">RapidAPI · Weather</span>
+        </div>
+
+    </div>
+</body>
+</html>

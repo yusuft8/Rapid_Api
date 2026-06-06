@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Api Project</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#131313",
+                        "primary": "#bf00ff",
+                        "secondary": "#00eefc",
+                        "background": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        "space": ["Space Grotesk", "sans-serif"],
+                        "inter": ["Inter", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #1a0b1a, #0a0a0a);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .glass-card:hover {
+                background: rgba(30, 30, 30, 0.7);
+                border-color: rgba(191, 0, 255, 0.3);
+                transform: translateY(-4px);
+            }
+
+        .neon-purple-glow:hover {
+            box-shadow: 0 0 25px rgba(191, 0, 255, 0.15);
+        }
+
+        .neon-cyan-glow:hover {
+            box-shadow: 0 0 25px rgba(0, 238, 252, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #bf00ff;
+            }
+    </style>
+</head>
+<body class="text-zinc-200 font-inter pb-28">
+
+    
+    <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-10">
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <section class="space-y-4">
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 px-1">Atmos_Condition</h2>
+                <div class="glass-card rounded-2xl overflow-hidden h-full">
+                    @await Component.InvokeAsync("WeatherWidget")
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 px-1">Cinema_Stream</h2>
+                <div class="glass-card rounded-2xl overflow-hidden h-full border-r-4 border-r-primary">
+                    @await Component.InvokeAsync("DailyFilmWidget")
+                </div>
+            </section>
+        </div>
+        <section class="space-y-4">
+            <div class="flex items-center gap-2 px-1">
+                <div class="w-1 h-4 bg-secondary rounded-full"></div>
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-500">Global_Pulse // News_Feed</h2>
+            </div>
+            <div class="glass-card rounded-2xl overflow-hidden border-l-4 border-l-secondary">
+                @await Component.InvokeAsync("NewsWidget")
+            </div>
+        </section>
+         <section class="space-y-4">
+            <div class="flex items-center gap-2 px-1">
+                <div class="w-1 h-4 bg-primary rounded-full"></div>
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-500">Live_Environment</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card neon-cyan-glow rounded-2xl overflow-hidden p-1">
+                    @await Component.InvokeAsync("RecipeWidget")
+                </div>
+                <div class="glass-card neon-purple-glow rounded-2xl overflow-hidden p-1">
+                    @await Component.InvokeAsync("BitcoinWidget")
+                </div>
+                <div class="glass-card neon-purple-glow rounded-2xl overflow-hidden p-1">
+                    @await Component.InvokeAsync("DailyMusicWidget")
+                </div>
+            </div>
+        </section>
+
+   
+       
+
+     
+        <section class="space-y-4">
+            <h2 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 px-1">Terminal_Utilities</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass-card rounded-xl p-4 flex items-center gap-4">
+                    @await Component.InvokeAsync("ConvertWidget")
+                </div>
+                <div class="glass-card rounded-xl p-4 flex items-center gap-4 border-t-2 border-t-primary/20">
+                    @await Component.InvokeAsync("GasWidget")
+                </div>
+            </div>
+        </section>
+        <section class="space-y-4">
+            <h2 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 px-1">Motivation</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass-card rounded-xl p-4 flex items-center gap-4">
+                    @await Component.InvokeAsync("MotivasyonWidget")
+                </div>
+                
+            </div>
+        </section>
+
+    </main>
+
+  
+
+</body>
+</html>

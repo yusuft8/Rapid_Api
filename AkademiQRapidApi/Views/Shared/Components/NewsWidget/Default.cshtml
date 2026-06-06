@@ -1,0 +1,156 @@
+﻿@* Projenizdeki doğru haber model yolunu en üste ekleyin *@
+@model AkademiQRapidApi.Models.NewsViewModel.Rootobject
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    .news-glass-card {
+        font-family: 'Inter', sans-serif;
+        background: rgba(26, 26, 26, 0.8); /* Anthracite base */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 255, 255, 0.2); /* Cyan Glow Border */
+        border-radius: 12px;
+        padding: 24px;
+        width: 100%; /* Yan yana dizilim için tam genişlik */
+        box-sizing: border-box;
+        color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .news-widget-header {
+        color: #BF00FF; /* Electric Purple */
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Haberleri yan yana 3 sütun yapan Grid yapısı */
+    .news-list-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    /* Ekran küçüldüğünde (Mobil/Tablet) tasarımın bozulmaması için responsive ayar */
+    @@media (max-width: 992px) {
+        .news-list-container
+
+    {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    }
+    @@media (max-width: 600px) {
+        .news-list-container
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    /* Haber kartı yapısı - Görsel üstte, metin altta olacak şekilde dikey dizilim */
+    .news-entry {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        padding: 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+        .news-entry:hover {
+            background: rgba(191, 0, 255, 0.05);
+            border-color: rgba(191, 0, 255, 0.2);
+            transform: translateY(-4px); /* Yan yanayken yukarı doğru esnemesi daha şık durur */
+        }
+
+    /* Görselin genişliğini kartın tamamına yayma */
+    .news-thumb {
+        width: 100%;
+        height: 150px;
+        border-radius: 6px;
+        object-fit: cover;
+        border: 1px solid rgba(191, 0, 255, 0.3); /* Purple Glow */
+    }
+
+    .news-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+    }
+
+    .news-source {
+        color: #00FFFF; /* Cyan */
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
+    .news-headline {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.4;
+        color: #efefef;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Başlığı 2 satırda sınırla, taşan kısma ... koy */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 8px;
+        min-height: 36px; /* Başlıklar farklı uzunlukta olsa bile kart boyları eşit kalsın */
+    }
+
+    .news-date {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: auto; /* Tarihi her zaman en alta yasla */
+    }
+</style>
+
+<div class="news-glass-card">
+    <div class="news-widget-header">
+        <span>Latest Updates</span>
+    </div>
+
+    <div class="news-list-container">
+        @if (Model != null && Model.items != null)
+        {
+            @foreach (var item in Model.items.Take(3))
+            {
+                <a href="@item.newsUrl" target="_blank" class="news-entry">
+                    <img src="@(item.images?.thumbnail ?? "https://via.placeholder.com/150/1a1a1a/BF00FF?text=News")"
+                         class="news-thumb" alt="thumbnail">
+
+                    <div class="news-details">
+                        <div>
+                            <div class="news-source">@item.publisher</div>
+                            <div class="news-headline">@item.title</div>
+                        </div>
+                        <div class="news-date">@item.timestamp</div>
+                    </div>
+                </a>
+            }
+        }
+        else
+        {
+            <div style="grid-column: span 3; text-align: center; color: rgba(255,255,255,0.4); font-size: 13px;">
+                Haberler şu anda yüklenemedi.
+            </div>
+        }
+    </div>
+</div>

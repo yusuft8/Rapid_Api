@@ -1,0 +1,31 @@
+﻿@model AkademiQRapidApi.Models.MotivasyonViewModel.Rootobject
+
+@{
+    // API'den veri gelmezse gösterilecek varsayılan siberpunk mesajı
+    var quoteText = Model?.quote ?? "NO DATA TRANSMISSION. HOLD THE LINE.";
+    var authorText = Model?.author?.ToUpper() ?? "SYSTEM_LOG_01";
+    var quoteType = Model?.type?.ToUpper() ?? "DIRECTIVE";
+}
+
+<article class="glass-panel rounded-lg flex flex-col justify-center col-span-1 md:col-span-5 lg:col-span-5 h-32 p-4 bg-gradient-to-br from-[#7c3aed]/10 to-transparent border-l-4 border-l-neon-purple overflow-hidden relative group">
+
+    <span class="material-symbols-outlined absolute -right-2 -bottom-4 text-[80px] text-neon-purple/5 transform -rotate-12 group-hover:scale-110 transition-transform duration-500 pointer-events-none">
+        format_quote
+    </span>
+
+    <blockquote class="w-full relative z-10 flex flex-col items-center text-center">
+
+        <span class="text-[0.6rem] text-neon-green font-label-caps tracking-[0.2em] mb-1 opacity-80">
+            [ @quoteType ]
+        </span>
+
+        <p class="font-headline-md text-headline-md text-white leading-tight mb-2 line-clamp-2 px-2" title="@quoteText">
+            "@quoteText"
+        </p>
+
+        <footer class="font-data-mono text-[0.70rem] text-white/50 tracking-widest">
+            — @authorText
+        </footer>
+
+    </blockquote>
+</article>

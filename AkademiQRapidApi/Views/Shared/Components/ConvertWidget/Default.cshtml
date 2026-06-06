@@ -1,0 +1,53 @@
+﻿@model AkademiQRapidApi.Models.ConvertViewmodel.Rootobject
+
+@{
+    // API'den gelen veriyi "1 Birim = X TL" formatına çeviriyoruz.
+    // Eğer API doğrudan güncel kuru (örn: 34.20) veriyorsa (1 / ...) kısmını silebilirsin.
+
+    float usdToTry = 0.00f;
+    float eurToTry = 0.00f;
+
+    if (Model?.to != null)
+    {
+        // 1 TL'nin USD karşılığı geliyorsa, 1 USD'nin TL karşılığını bulmak için 1'e bölüyoruz
+        usdToTry = Model.to.USD > 0 ? (1 / Model.to.USD) : 0.00f;
+        eurToTry = Model.to.EUR > 0 ? (1 / Model.to.EUR) : 0.00f;
+    }
+}
+
+<article class="glass-panel rounded-lg flex flex-col col-span-1 md:col-span-3 lg:col-span-3 h-64 p-card-padding">
+
+    <header class="glass-panel-header pb-2 mb-4">
+        <h2 class="font-headline-md text-headline-md text-white tracking-widest">MARKET <span class="text-neon-purple">/ RATES</span></h2>
+    </header>
+
+    <div class="space-y-4 flex-1 flex flex-col justify-center">
+
+        <div class="relative group">
+            <span class="absolute left-3 top-2.5 font-body-sm text-white/60 tracking-widest flex items-center gap-1 group-hover:text-neon-purple transition-colors">
+                <span class="material-symbols-outlined text-[16px]">attach_money</span> USD
+            </span>
+            <input class="w-full bg-black/20 border-b border-white/10 border-t-0 border-l-0 border-r-0 text-white font-data-mono text-data-mono text-right py-2 pl-20 pr-2 transition-all outline-none"
+                   type="text"
+                   value="@usdToTry.ToString("N2") ₺"
+                   readonly />
+        </div>
+
+        <div class="flex justify-center -my-2 z-10">
+            <div class="w-8 h-8 rounded-full bg-[#221e28] border border-white/10 flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                <span class="material-symbols-outlined text-neon-purple text-[18px]">currency_exchange</span>
+            </div>
+        </div>
+
+        <div class="relative group">
+            <span class="absolute left-3 top-2.5 font-body-sm text-neon-green/60 tracking-widest flex items-center gap-1 group-hover:text-neon-green transition-colors">
+                <span class="material-symbols-outlined text-[16px]">euro</span> EUR
+            </span>
+            <input class="w-full bg-black/20 border-b border-neon-green border-t-0 border-l-0 border-r-0 text-neon-green font-data-mono text-data-mono text-right py-2 pl-20 pr-2 outline-none shadow-[0_4px_15px_-3px_rgba(0,229,160,0.1)]"
+                   readonly
+                   type="text"
+                   value="@eurToTry.ToString("N2") ₺" />
+        </div>
+
+    </div>
+</article>

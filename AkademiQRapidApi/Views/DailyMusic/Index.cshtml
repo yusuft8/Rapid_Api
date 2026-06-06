@@ -1,0 +1,346 @@
+﻿@model List<AkademiQRapidApi.Models.DailyMusicModel.Class1>
+@{
+    ViewData["Title"] = "Spotify Türkiye Top 25";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TrackChart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #05060d;
+            color: #e8ecff;
+            font-family: 'IBM Plex Sans', sans-serif;
+            min-height: 100vh;
+            padding: 40px 16px;
+        }
+
+        .wrapper {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .brand-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            letter-spacing: .06em;
+        }
+
+        .brand-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(29,185,84,.1);
+            border: 1px solid rgba(29,185,84,.3);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #1db954;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: #1db954;
+            border-radius: 50%;
+            animation: blink 1.6s ease-in-out infinite;
+        }
+
+        @@keyframes blink {
+            0%, 100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+
+        /* DIVIDER */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .div-line {
+            flex: 1;
+            height: 1px;
+            background: #1e2236;
+        }
+
+        .div-mid {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            padding: 0 18px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        /* LIST */
+        .music-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .music-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: transparent;
+            border: 1px solid transparent;
+            transition: background .2s, border-color .2s;
+            cursor: default;
+        }
+
+            .music-item:hover {
+                background: #0d0f1a;
+                border-color: #1e2236;
+            }
+
+            .music-item:nth-child(1) {
+                background: #0d0f1a;
+                border-color: rgba(255,215,0,.15);
+            }
+
+            .music-item:nth-child(2) {
+                background: #0d0f1a;
+                border-color: rgba(192,192,192,.12);
+            }
+
+            .music-item:nth-child(3) {
+                background: #0d0f1a;
+                border-color: rgba(205,127,50,.12);
+            }
+
+        /* RANK */
+        .rank {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            width: 38px;
+            text-align: center;
+            color: #4a5078;
+            flex-shrink: 0;
+        }
+
+        .music-item:nth-child(1) .rank {
+            color: #FFD700;
+            font-size: 26px;
+        }
+
+        .music-item:nth-child(2) .rank {
+            color: #C0C0C0;
+            font-size: 24px;
+        }
+
+        .music-item:nth-child(3) .rank {
+            color: #CD7F32;
+            font-size: 23px;
+        }
+
+        /* ALBUM ART */
+        .album-art {
+            width: 46px;
+            height: 46px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin: 0 14px;
+            flex-shrink: 0;
+            border: 1px solid #1e2236;
+        }
+
+        .album-art-placeholder {
+            width: 46px;
+            height: 46px;
+            border-radius: 6px;
+            background: #131625;
+            margin: 0 14px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #1e2236;
+            border: 1px solid #1e2236;
+        }
+
+        /* TRACK INFO */
+        .track-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .track-name {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            color: #e8ecff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+
+        .music-item:nth-child(1) .track-name {
+            color: #FFD700;
+        }
+
+        .artist-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: #4a5078;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* EMPTY */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+            opacity: .3;
+        }
+
+        .empty-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            color: #4a5078;
+            letter-spacing: .06em;
+        }
+
+        .empty-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: #2a2f42;
+            margin-top: 8px;
+        }
+
+        /* FOOTER */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 24px;
+            padding: 0 2px;
+        }
+
+        .footer-info {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+        }
+
+        .footer-api {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #4a5078;
+            background: #0d0f1a;
+            border: 1px solid #1e2236;
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+
+        <div class="topbar">
+            <div>
+                <div class="brand-name">TrackChart</div>
+                <div class="brand-sub">Spotify Türkiye · Günlük Top 25</div>
+            </div>
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                Güncel
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <div class="div-line"></div>
+            <div class="div-mid">En Çok Dinlenenler</div>
+            <div class="div-line"></div>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="music-list">
+                @foreach (var item in Model.Take(25))
+                {
+                    <div class="music-item">
+                        <div class="rank">@item.chartEntryData.currentRank</div>
+
+                        @if (!string.IsNullOrEmpty(item.trackMetadata.displayImageUri))
+                        {
+                            <img src="@item.trackMetadata.displayImageUri"
+                                 alt="@item.trackMetadata.trackName"
+                                 class="album-art" />
+                        }
+                        else
+                        {
+                            <div class="album-art-placeholder">♪</div>
+                        }
+
+                        <div class="track-info">
+                            <div class="track-name">@item.trackMetadata.trackName</div>
+                            <div class="artist-name">@item.trackMetadata.artists.FirstOrDefault()?.name</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <span class="empty-icon">🎵</span>
+                <div class="empty-title">Liste Yüklenemedi</div>
+                <div class="empty-sub">Şu an gösterilecek veri bulunamadı</div>
+            </div>
+        }
+
+        <div class="footer">
+            <span class="footer-info">Spotify Türkiye · Günlük güncelleme</span>
+            <span class="footer-api">RapidAPI · Spotify Charts</span>
+        </div>
+
+    </div>
+</body>
+</html>

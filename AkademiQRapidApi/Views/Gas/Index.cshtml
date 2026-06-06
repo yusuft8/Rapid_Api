@@ -1,0 +1,255 @@
+﻿@model AkademiQRapidApi.Models.GasViewModel.Rootobject
+
+@{
+    ViewData["Title"] = "Avrupa Yakıt Fiyatları";
+    var selectedCountry = ViewBag.SelectedCountry as string ?? "Turkey";
+    var selected = ViewBag.SelectedResult as AkademiQRapidApi.Models.GasViewModel.Result;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yakıt Fiyatları</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:       #0d0f14;
+            --card:     #13161e;
+            --border:   rgba(255,255,255,0.07);
+            --accent:   #f5a623;
+            --accent2:  #e05c1a;
+            --text:     #e8eaf0;
+            --muted:    #6b7280;
+            --lpg:      #34d399;
+            --diesel:   #60a5fa;
+            --gasoline: #f87171;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 48px 16px 80px;
+        }
+
+        .header { text-align: center; margin-bottom: 48px; }
+        .header .eyebrow {
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(48px, 8vw, 88px);
+            line-height: 1;
+            letter-spacing: 0.03em;
+            background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p { margin-top: 12px; font-size: 14px; color: var(--muted); }
+
+        .selector-wrap { width: 100%; max-width: 480px; margin-bottom: 40px; }
+        .selector-label {
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+        .select-box {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23f5a623' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 44px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .select-box:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245,166,35,.15);
+        }
+        .select-box option { background: #1a1d27; }
+
+        .price-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            animation: fadeUp .4s ease both;
+        }
+        @@keyframes fadeUp {
+            from { opacity:0; transform:translateY(20px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        .card-header {
+            padding: 28px 28px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .fuel-icon {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .card-header-text h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px;
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+        }
+        .card-header-text span { font-size: 12px; color: var(--muted); }
+
+        .fuel-list { padding: 8px 0; }
+        .fuel-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--border);
+            transition: background .15s;
+        }
+        .fuel-row:last-child { border-bottom: none; }
+        .fuel-row:hover { background: rgba(255,255,255,0.03); }
+
+        .fuel-left { display: flex; align-items: center; gap: 14px; }
+        .fuel-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .fuel-name { font-size: 14px; font-weight: 500; }
+        .fuel-sub  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+        .fuel-price {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 0.03em;
+        }
+        .fuel-currency { font-size: 12px; color: var(--muted); text-align: right; margin-top: 2px; }
+
+        .no-data { padding: 48px 28px; text-align: center; color: var(--muted); font-size: 14px; }
+
+        @@media (max-width: 500px) { .fuel-price { font-size: 22px; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <p class="eyebrow">RapidAPI · Gas Price</p>
+        <h1>Yakıt Fiyatları</h1>
+        <p>Avrupa ülkelerinin güncel yakıt fiyatları</p>
+    </div>
+
+    <div class="selector-wrap">
+        <p class="selector-label">Ülke Seç</p>
+        <form method="get" action="/Gas/Index" id="countryForm">
+            <select name="selectedCountry"
+                    class="select-box"
+                    onchange="document.getElementById('countryForm').submit()">
+                @if (Model?.result != null)
+                {
+                    @foreach (var item in Model.result.OrderBy(r => r.country))
+                    {
+                        if (item.country == selectedCountry)
+                        {
+                            <option value="@item.country" selected>@item.country</option>
+                        }
+                        else
+                        {
+                            <option value="@item.country">@item.country</option>
+                        }
+                    }
+                }
+            </select>
+        </form>
+    </div>
+
+    <div class="price-card">
+        @if (selected != null)
+        {
+            <div class="card-header">
+                <div class="fuel-icon">&#9981;</div>
+                <div class="card-header-text">
+                    <h2>@selected.country</h2>
+                    <span>Para Birimi: @(selected.currency ?? "—")</span>
+                </div>
+            </div>
+            <div class="fuel-list">
+
+                <div class="fuel-row">
+                    <div class="fuel-left">
+                        <div class="fuel-dot" style="background: var(--gasoline);"></div>
+                        <div>
+                            <div class="fuel-name">Benzin</div>
+                            <div class="fuel-sub">Gasoline / Unleaded</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="fuel-price" style="color: var(--gasoline);">@(selected.gasoline ?? "—")</div>
+                        <div class="fuel-currency">@(selected.currency ?? "") / L</div>
+                    </div>
+                </div>
+
+                <div class="fuel-row">
+                    <div class="fuel-left">
+                        <div class="fuel-dot" style="background: var(--diesel);"></div>
+                        <div>
+                            <div class="fuel-name">Dizel</div>
+                            <div class="fuel-sub">Diesel</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="fuel-price" style="color: var(--diesel);">@(selected.diesel ?? "—")</div>
+                        <div class="fuel-currency">@(selected.currency ?? "") / L</div>
+                    </div>
+                </div>
+
+                <div class="fuel-row">
+                    <div class="fuel-left">
+                        <div class="fuel-dot" style="background: var(--lpg);"></div>
+                        <div>
+                            <div class="fuel-name">LPG</div>
+                            <div class="fuel-sub">Autogas</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="fuel-price" style="color: var(--lpg);">@(selected.lpg ?? "—")</div>
+                        <div class="fuel-currency">@(selected.currency ?? "") / L</div>
+                    </div>
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="no-data">Bu ülke için veri bulunamadı.</div>
+        }
+    </div>
+
+</body>
+</html>

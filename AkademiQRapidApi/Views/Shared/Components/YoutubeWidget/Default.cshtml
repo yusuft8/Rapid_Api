@@ -1,0 +1,56 @@
+﻿@model AkademiQRapidApi.Models.YoutubeViewModel.Rootobject
+
+@{
+    // API'den gelen verileri null kontrolleriyle alıyoruz
+    var videoTitle = Model?.title ?? "SYSTEM_LOG: Encrypted Video Stream";
+    var videoLink = Model?.link ?? "#";
+    var status = Model?.status?.ToUpper() ?? "OFFLINE";
+
+    // Süre saniye cinsinden geliyorsa dakikaya çeviriyoruz (Örn: 120 -> 2.0 MIN)
+    var duration = Model?.duration > 0 ? (Model.duration / 60).ToString("0.0") + " MIN" : "UNKNOWN";
+}
+
+<article class="glass-panel rounded-lg flex flex-col col-span-1 md:col-span-6 lg:col-span-5 h-80 overflow-hidden">
+
+    <header class="glass-panel-header px-5 py-3 flex justify-between items-center border-b border-white/10 z-10">
+        <h2 class="font-headline-md text-headline-md text-white tracking-widest">STREAM <span class="text-neon-purple">/ VOD</span></h2>
+
+        @if (status == "OK" || status == "COMPLETED")
+        {
+            <span class="font-label-caps text-label-caps px-2 py-1 bg-neon-green text-[#05060d] rounded-sm animate-pulse tracking-widest text-[0.65rem]">READY</span>
+        }
+        else
+        {
+            <span class="font-label-caps text-label-caps px-2 py-1 bg-red-600 text-white rounded-sm animate-pulse tracking-widest text-[0.65rem]">@status</span>
+        }
+    </header>
+
+    <a href="@videoLink" target="_blank" class="flex-1 relative group cursor-pointer overflow-hidden text-decoration-none block">
+
+        <img alt="@videoTitle" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-500"
+             src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop" />
+
+        <div class="absolute inset-0 bg-[#05060d]/50 group-hover:bg-black/20 transition-colors duration-500 z-0"></div>
+
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-neon-purple/80 backdrop-blur-md flex items-center justify-center z-10 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(124,58,237,0.6)]">
+            <span class="material-symbols-outlined text-white text-3xl ml-1">play_arrow</span>
+        </div>
+
+        <div class="absolute bottom-4 left-4 z-10 bg-black/60 backdrop-blur-sm px-4 py-2 border-l-2 border-neon-purple max-w-[85%]">
+            <p class="font-body-sm text-body-sm text-white line-clamp-1" title="@videoTitle">
+                @videoTitle
+            </p>
+            <p class="font-data-mono text-[0.65rem] text-neon-green mt-1 tracking-widest">
+                DUR: @duration
+            </p>
+        </div>
+
+        @if (Model?.progress > 0 && Model.progress < 100)
+        {
+            <div class="absolute top-4 right-4 z-10 bg-black/80 backdrop-blur-md px-2 py-1 border border-neon-green rounded-sm">
+                <span class="font-data-mono text-[0.65rem] text-neon-green tracking-widest">DL: %@Model.progress</span>
+            </div>
+        }
+
+    </a>
+</article>

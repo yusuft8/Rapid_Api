@@ -1,0 +1,33 @@
+﻿@model AkademiQRapidApi.Models.YoutubeViewModel.Rootobject;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" />
+    <title>Youtube mp3</title>
+</head>
+<body>
+
+    <h2>Youtube mp3 çevirici</h2>
+
+    
+    <form method="get">
+        <input type="text" name="url" placeholder="Youtube video url'si giriniz"/>
+        <button type="submit">MP3'e Çevir</button>
+    </form>
+    @if (Model != null)
+    {
+        <p>Başlık : @Model.title</p>
+        <p>Süre : @Model.duration </p>
+        <p>Durum : @Model.status  </p>
+        <p>Boyut : @Model.filesize</p>
+
+
+        <p> Link :<a href="@Model.link" target="_blank"> MP3 indir</a> </p>
+
+        <p>Mesaj : @Model.msg</p>
+    }
+</body>
+</html>

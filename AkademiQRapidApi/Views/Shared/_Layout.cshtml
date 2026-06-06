@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Api Dashboard
+    </title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#bf00ff",
+                        "secondary": "#00eefc",
+                        "background": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        "space": ["Space Grotesk", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Alt Navigasyon Kapsül Tasarımı */
+        .bottom-nav-capsule {
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 8px 24px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: fit-content;
+            min-width: 380px;
+            gap: 20px;
+        }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            padding: 8px 12px;
+        }
+
+            .nav-link.active {
+                color: #bf00ff;
+                filter: drop-shadow(0 0 8px rgba(191, 0, 255, 0.4));
+            }
+
+            .nav-link:hover:not(.active) {
+                color: #00eefc;
+            }
+
+        .nav-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-32">
+
+    <!-- ÜST BAR: Menu ve Search Kaldırıldı -->
+    <header class="flex justify-between items-center px-8 py-6 h-20">
+        <h1 class="text-2xl font-black tracking-[0.2em] text-primary font-space uppercase italic">
+            NEON<span class="text-white">_</span>OS
+        </h1>
+
+        <div class="flex items-center gap-6">
+            <span class="material-symbols-outlined text-secondary cursor-pointer hover:scale-110 transition-transform">notifications</span>
+            <div class="w-10 h-10 rounded-full border-2 border-primary/30 overflow-hidden">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yusuf" alt="Profile">
+            </div>
+        </div>
+    </header>
+
+    <!-- ANA İÇERİK -->
+    <main class="max-w-7xl mx-auto px-6">
+        @RenderBody()
+    </main>
+
+      <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+        <nav class="bottom-nav-capsule shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center gap-2">
+
+            <!-- SYSTEM / DASHBOARD -->
+            <a href="/Home/Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">grid_view</span>
+                <span class="nav-text">System</span>
+            </a>
+
+            <!-- MARKET / BITCOIN -->
+            <a href="/Bitcoin/Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bitcoin" ? "active" : "")">
+                <span class="material-symbols-outlined">monitoring</span>
+                <span class="nav-text">Market</span>
+            </a>
+
+            <!-- WEATHER -->
+            <a href="/Weather/Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Weather" ? "active" : "")">
+                <span class="material-symbols-outlined">sunny</span>
+                <span class="nav-text">Weather</span>
+            </a>
+
+            <!-- FEED / NEWS -->
+            <a href="/News/Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "News" ? "active" : "")">
+                <span class="material-symbols-outlined">rss_feed</span>
+                <span class="nav-text">Feed</span>
+            </a>
+
+            <!-- KITCHEN / RECIPE -->
+            <a href="/Recipe/Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Recipe" ? "active" : "")">
+                <span class="material-symbols-outlined">restaurant</span>
+                <span class="nav-text">Kitchen</span>
+            </a>
+
+            <!-- CONVERT -->
+            <a href="/Convert/Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Convert" ? "active" : "")">
+                <span class="material-symbols-outlined">currency_exchange</span>
+                <span class="nav-text">Convert</span>
+            </a>
+
+            <!-- GAS -->
+            <a href="/Gas/Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Gas" ? "active" : "")">
+                <span class="material-symbols-outlined">local_gas_station</span>
+                <span class="nav-text">Gas</span>
+            </a>
+
+            <!-- MOVIES -->
+            <a href="/DailyFilm/Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "DailyFilm" ? "active" : "")">
+                <span class="material-symbols-outlined">movie</span>
+                <span class="nav-text">Cinema</span>
+            </a>
+
+        </nav>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

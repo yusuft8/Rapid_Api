@@ -1,0 +1,30 @@
+﻿@model AkademiQRapidApi.Models.DailyMusicModel.Class1
+
+@{
+    var topTrack = Model?.trackMetadata;
+    var trackName = topTrack?.trackName?.ToUpper() ?? "SYSTEM OFFLINE";
+    var artistName = topTrack?.artists?.FirstOrDefault()?.name?.ToUpper() ?? "UNKNOWN ARTIST";
+    var coverArt = topTrack?.displayImageUri ?? "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=300&auto=format&fit=crop";
+}
+
+<article class="glass-panel rounded-lg flex items-center col-span-1 md:col-span-6 lg:col-span-6 h-32 p-4 gap-6 overflow-hidden">
+
+    <img alt="@trackName Cover Art" class="w-24 h-24 rounded object-cover border border-white/10 shadow-[0_0_15px_rgba(124,58,237,0.3)] shrink-0" src="@coverArt" />
+
+    <div class="flex-1 flex flex-col justify-center min-w-0">
+
+        <p class="text-[0.65rem] text-neon-green font-label-caps tracking-widest mb-1.5 opacity-90">
+            GÜNÜN EN ÇOK DİNLENEN ŞARKISI
+        </p>
+
+        <h3 class="font-headline-md text-headline-md text-white leading-none truncate mb-2" title="@trackName">
+            @trackName
+        </h3>
+
+        <p class="font-body-sm text-body-sm text-neon-purple truncate" title="@artistName">
+            @artistName
+        </p>
+
+    </div>
+
+</article>

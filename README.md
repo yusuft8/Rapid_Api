@@ -43,7 +43,6 @@ Projeyi yerel bilgisayarınızda çalıştırmak için aşağıdaki adımları t
 
 ### 1. Ön Gereksinimler
 * Bilgisayarınızda **.NET 9.0 SDK** yüklü olmalıdır.
-* Veritabanı işlemleri için tercih ettiğiniz SQL Server (veya ilgili DB provider) kurulu olmalıdır.
 
 ### 2. Repoyu Klonlayın
 ```bash

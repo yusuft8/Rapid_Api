@@ -8,7 +8,7 @@ Bu proje, **AkademiQ Ai Business School Backend Eğitimi** kapsamında geliştir
 
 ## 📌 Proje Yaklaşımı & Amacı
 
-Projenin temel amacı; finans, spor, medya ve içerik gibi farklı API servislerinden gelen verileri asenkron süreçlerle eş zamanlı olarak çekmek, modern bir arayüz ile kullanıcıya sunmak ve sisteme yapay zeka destekli analiz kabiliyeti kazandırmaktır. 
+Projenin temel amacı; finans, spor, medya ve içerik gibi farklı API servislerinden gelen verileri asenkron süreçlerle eş zamanlı olarak çekmek, modern bir arayüz ile kullanıcıya sunmak .
 
 ---
 
@@ -34,8 +34,7 @@ Proje, temiz kod prensiplerine ve sürdürülebilir mimari standartlarına uygun
 * **Mimari:** N-Tier Architecture (Çok Katmanlı Mimari) – Sürdürülebilir, gevşek bağlı (loosely coupled) ve Dependency Injection odaklı yapı.
 * **Veri Yönetimi:** Entity Framework Core (Code-First yaklaşımı ile esnek veritabanı yönetimi).
 * **Performans:** Çoklu API isteklerinde sistemin kilitlenmesini önlemek adına tamamen `async/await` asenkron programlama yapısı.
-* **Arayüz Tasarımı:** TailwindCSS ile geliştirilmiş Cyberpunk temalı (glassmorphism ve neon efektli), tamamen responsive (mobil uyumlu) UI.
-* **Kullanıcı Deneyimi:** Sayfa yenilenmeden kesintisiz veri akışı için AJAX & Fetch API entegrasyonu.
+* **Kullanıcı Deneyimi:** Sayfa yenilenmeden kesintisiz veri akışı entegrasyonu.
 
 ---
 

@@ -138,14 +138,17 @@
             </div>
         </section>
         <section class="space-y-4">
-            <h2 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 px-1">Motivation</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="glass-card rounded-xl p-4 flex items-center gap-4">
-                    @await Component.InvokeAsync("MotivasyonWidget")
-                </div>
-                
-            </div>
-        </section>
+     <h2 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 px-1">Motivation</h2>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div class="glass-card rounded-xl p-4 flex items-center gap-4">
+             @await Component.InvokeAsync("MotivasyonWidget")
+         </div>
+         <div class="glass-card rounded-xl p-4 flex items-center gap-4 border-t-2 border-t-primary/20">
+             @await Component.InvokeAsync("FootballScoreWidget")
+         </div>
+         
+     </div>
+ </section>
 
     </main>
 

@@ -12,14 +12,6 @@ Projenin temel amacı; finans, spor, medya ve içerik gibi farklı API servisler
 
 ---
 
-## 🤖 Asistan Nova (AI Entegrasyonu)
-
-Klasik dashboard mantığını bir üst seviyeye taşımak adına projeye **Google Gemini altyapısı** entegre edilmiştir:
-* **Etkileşimli Sohbet:** Kullanıcı ile anlık ve dinamik bir iletişim kurar.
-* **Veri Analizi:** Dashboard üzerindeki sistem verilerini analiz ederek kullanıcıya içgörüler sunar.
-* **Bağlam Yönetimi:** Yapılan konuşmaları veritabanında saklayarak geçmişe dayalı (context-aware) bir sohbet deneyimi sağlar.
-
----
 
 ## 📊 Entegre Edilen API'ler ve Veri Başlıkları
 
@@ -31,7 +23,7 @@ Projede kullanılan tüm dinamik veriler, modüler veri kartları (widgets / com
 * 📰 **Haberler:** Güncel gelişmelerin kategorize edilmiş 3 adet dinamik haber içeriği (NewsAPI).
 * 🎬 **Medya & Eğlence:** Günün en popüler filmi (TMDB) ve en çok dinlenen şarkısı (Deezer / Music API).
 * 💬 **Motivasyon & Dil:** Günlük motivasyon sözleri (FavQs API) ve entegre Google Translate API ile anlık Türkçe çeviri desteği.
-
+* 🍳 Günün Yemek Önerisi: Yemek tarifleri API'si (RapidAPI) üzerinden çekilen günlük dinamik yemek önerileri ve tarif detayları.  
 ---
 
 ## 🧠 Teknik Mimari ve Teknolojiler

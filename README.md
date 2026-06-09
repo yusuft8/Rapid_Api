@@ -34,8 +34,7 @@ Proje, temiz kod prensiplerine ve sürdürülebilir mimari standartlarına uygun
 * **Mimari:** N-Tier Architecture (Çok Katmanlı Mimari) – Sürdürülebilir, gevşek bağlı (loosely coupled) ve Dependency Injection odaklı yapı.
 * **Veri Yönetimi:** Entity Framework Core (Code-First yaklaşımı ile esnek veritabanı yönetimi).
 * **Performans:** Çoklu API isteklerinde sistemin kilitlenmesini önlemek adına tamamen `async/await` asenkron programlama yapısı.
-* **Kullanıcı Deneyimi:** Sayfa yenilenmeden kesintisiz veri akışı entegrasyonu.
-
+ 
 ---
 
 ## 🛠️ Kurulum ve Çalıştırma Talimatları
